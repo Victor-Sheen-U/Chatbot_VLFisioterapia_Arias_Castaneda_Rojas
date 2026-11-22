@@ -1,0 +1,43 @@
+======================================================================
+EVIDENCIA T14 — REINICIO COMPLETO DE FASTAPI Y BOT CONSERVANDO RESERVAS EN SQLITE
+Fecha de ejecución: 2026-11-21T22:07:51.431998-05:00
+Cuenta: Cuenta A (Principal) (usuario_id=7599925239) | Código consultado: VF-3DFB92480C
+======================================================================
+
+1. Procesos activos ANTES del reinicio:
+1128969 /home/victorsheen/Chatbot_VLFisioterapia_Arias_Castaneda_Rojas/.venv/bin/python -m uvicorn main:app --host 127.0.0.1 --port 8012
+1128972 /home/victorsheen/Chatbot_VLFisioterapia_Arias_Castaneda_Rojas/.venv/bin/python bot_telegram.py
+
+2. Procesos activos DESPUÉS de detener y reiniciar FastAPI (8012) y bot_telegram.py:
+1129971 /home/victorsheen/Chatbot_VLFisioterapia_Arias_Castaneda_Rojas/.venv/bin/python -m uvicorn main:app --host 127.0.0.1 --port 8012
+1129974 /home/victorsheen/Chatbot_VLFisioterapia_Arias_Castaneda_Rojas/.venv/bin/python bot_telegram.py
+
+3. Respuesta a '/reserva VF-3DFB92480C' tras el reinicio de ambos servicios:
+• Código: VF-3DFB92480C
+• Paciente: Valeria
+• Tratamiento: deportiva
+• Fecha: 2026-11-25
+• Hora: 11:00
+• Estado: ACTIVA
+• Especialista: valeria
+• Tarifa: $70.000 COP
+
+4. Verificación de persistencia en SQLite (reservas.db):
+{
+  "codigo": "VF-3DFB92480C",
+  "cliente": "Valeria",
+  "servicio": "deportiva",
+  "fecha": "2026-11-25",
+  "hora": "11:00",
+  "duracion_minutos": 45,
+  "estado": "activa",
+  "fisioterapeuta": "valeria",
+  "fisioterapeuta_asignado": "valeria",
+  "telefono": null,
+  "motivo_consulta": null,
+  "precio_cop": 70000,
+  "creada_en": "2026-11-21T16:43:57.258072-05:00",
+  "cancelada_en": null,
+  "reprogramada_en": null,
+  "historial_reprogramaciones": "[]"
+}

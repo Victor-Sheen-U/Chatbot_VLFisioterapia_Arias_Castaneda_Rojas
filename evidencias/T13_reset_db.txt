@@ -1,0 +1,39 @@
+======================================================================
+EVIDENCIA T13 — COMANDO /reset LIMPIA HISTORIAL PERO CONSERVA RESERVAS EN SQLITE
+Fecha de ejecución: 2026-11-21T22:07:46.851187-05:00
+Cuenta: Cuenta A (Principal) (usuario_id=7599925239) | Código propio: VF-3DFB92480C
+======================================================================
+
+1. Estado del historial en memoria antes de /reset: 3 mensajes ([system, user, assistant]).
+2. Respuesta del bot al comando /reset:
+   Conversación reiniciada. Tus citas guardadas se conservan. ¿En qué te puedo colaborar?
+3. Estado del historial en memoria después de /reset: 1 mensaje (solo role='system').
+4. Respuesta del bot al comando '/reserva VF-3DFB92480C' inmediatamente después de /reset:
+• Código: VF-3DFB92480C
+• Paciente: Valeria
+• Tratamiento: deportiva
+• Fecha: 2026-11-25
+• Hora: 11:00
+• Estado: ACTIVA
+• Especialista: valeria
+• Tarifa: $70.000 COP
+
+5. Registro verificado en SQLite (reservas.db):
+{
+  "codigo": "VF-3DFB92480C",
+  "cliente": "Valeria",
+  "servicio": "deportiva",
+  "fecha": "2026-11-25",
+  "hora": "11:00",
+  "duracion_minutos": 45,
+  "estado": "activa",
+  "fisioterapeuta": "valeria",
+  "fisioterapeuta_asignado": "valeria",
+  "telefono": null,
+  "motivo_consulta": null,
+  "precio_cop": 70000,
+  "creada_en": "2026-11-21T16:43:57.258072-05:00",
+  "cancelada_en": null,
+  "reprogramada_en": null,
+  "historial_reprogramaciones": "[]"
+}

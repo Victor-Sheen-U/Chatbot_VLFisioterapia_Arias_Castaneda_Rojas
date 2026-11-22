@@ -1,0 +1,69 @@
+======================================================================
+EVIDENCIA T19 — MODIFICAR (REPROGRAMAR) RESERVA PROPIA CON HUELLA SHA-256
+Fecha de ejecución: 2026-11-21T22:07:54.469346-05:00
+Cuenta: Cuenta A (Principal) (usuario_id=7599925239) | Código: VF-3DFB92480C
+Huella SHA-256 (referencia previa validada): f3722b05d70601ba9cf587d62690382870c2f338581f9ce34cf9f4e3c6e678b9
+======================================================================
+
+1. Estado de la reserva en SQLite ANTES de modificar:
+{
+  "codigo": "VF-3DFB92480C",
+  "cliente": "Valeria",
+  "servicio": "deportiva",
+  "fecha": "2026-11-25",
+  "hora": "11:00",
+  "duracion_minutos": 45,
+  "estado": "activa",
+  "fisioterapeuta": "valeria",
+  "fisioterapeuta_asignado": "valeria",
+  "telefono": null,
+  "motivo_consulta": null,
+  "precio_cop": 70000,
+  "creada_en": "2026-11-21T16:43:57.258072-05:00",
+  "cancelada_en": null,
+  "reprogramada_en": null,
+  "historial_reprogramaciones": "[]"
+}
+
+2. Resumen de propuesta MODIFICAR presentado en Telegram:
+Propuesta de operación: MODIFICAR
+• Paciente: 
+• Tratamiento: deportiva
+• Fecha: 2026-11-25
+• Hora: 15:00
+• Código de cita: VF-3DFB92480C
+• Referencia de solicitud: 51149206436540d38f8bdecde4d1f5af
+Revisa los datos y pulsa Confirmar para ejecutar en la agenda o Descartar para cancelarla.
+
+3. Recibo devuelto tras pulsar [Confirmar] (HTTP 200 OK):
+¡Operación MODIFICAR registrada con éxito! 🎉
+• Código: VF-3DFB92480C
+• Paciente: Valeria
+• Tratamiento: deportiva
+• Fecha: 2026-11-25
+• Hora: 15:00
+• Estado: ACTIVA
+• Especialista: valeria
+• Tarifa: $70.000 COP
+• Referencia de operación: 51149206436540d38f8bdecde4d1f5af
+• Consulta directa: /reserva VF-3DFB92480C
+
+4. Estado de la reserva en SQLite DESPUÉS de modificar (nueva hora 15:00 e historial_reprogramaciones actualizado):
+{
+  "codigo": "VF-3DFB92480C",
+  "cliente": "Valeria",
+  "servicio": "deportiva",
+  "fecha": "2026-11-25",
+  "hora": "15:00",
+  "duracion_minutos": 45,
+  "estado": "activa",
+  "fisioterapeuta": "valeria",
+  "fisioterapeuta_asignado": "valeria",
+  "telefono": null,
+  "motivo_consulta": null,
+  "precio_cop": 70000,
+  "creada_en": "2026-11-21T16:43:57.258072-05:00",
+  "cancelada_en": null,
+  "reprogramada_en": "2026-11-21T22:07:54.438695-05:00",
+  "historial_reprogramaciones": "[{\"fecha_anterior\": \"2026-11-25\", \"hora_anterior\": \"11:00\", \"modificada_en\": \"2026-11-21T22:07:54.438695-05:00\"}]"
+}

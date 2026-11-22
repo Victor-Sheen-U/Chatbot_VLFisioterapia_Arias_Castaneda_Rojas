@@ -1,0 +1,8 @@
+fastapi==0.115.12
+uvicorn==0.34.2
+httpx==0.28.1
+tzdata>=2025.2
+pydantic>=2.10.0
+gradio>=6,<7
+python-telegram-bot>=22,<23
+pysqlite3-binary>=0.5.4; sys_platform == 'linux'

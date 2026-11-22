@@ -1,0 +1,102 @@
+======================================================================
+EVIDENCIA T22 — CONCURRENCIA MULTIHILO POR EL ÚLTIMO CUPO (/telegram/operaciones)
+Fecha de ejecución: 2026-11-21T15:46:22.329369-05:00
+Método: Ejecución automatizada con ThreadPoolExecutor(max_workers=2) sobre SQLite real
+======================================================================
+
+Condición inicial: Especialista 'carlos' (único habilitado para 'neurologica', 60 min)
+Intervalo disputado: 2026-11-28 a las 10:00 (10:00 a 11:00)
+
+--- Respuesta para X-Telegram-User=10000001 (HTTP 201) ---
+{
+  "ok": true,
+  "solicitud_id": "11111111111111111111111111111111",
+  "accion": "crear",
+  "reserva": {
+    "codigo": "VF-DD395EF424",
+    "cliente": "Paciente Concurrente 1",
+    "servicio": "neurologica",
+    "fecha": "2026-11-28",
+    "hora": "10:00",
+    "duracion_minutos": 60,
+    "estado": "activa",
+    "fisioterapeuta": "carlos",
+    "fisioterapeuta_asignado": "carlos",
+    "telefono": null,
+    "motivo_consulta": null,
+    "precio_cop": 85000,
+    "creada_en": "2026-11-21T15:46:22.348395-05:00",
+    "cancelada_en": null,
+    "reprogramada_en": null,
+    "historial_reprogramaciones": []
+  },
+  "referencia": "d11a57ae08f88fefecefdddc74d9fd7b23d5c2cf0610b043b4ba241a2445ce39"
+}
+
+--- Respuesta para X-Telegram-User=10000002 (HTTP 409) ---
+{
+  "ok": false,
+  "solicitud_id": "22222222222222222222222222222222",
+  "accion": "crear",
+  "detalle": "El horario o profesional seleccionado no está disponible en esa fecha y hora."
+}
+
+Códigos HTTP obtenidos (ordenados): [201, 409] -> Exactamente un 201 Created y un 409 Conflict.
+
+--- Verificación en SQLite: Tabla 'reservas' (conteo = 1 fila activa) ---
+[
+  {
+    "codigo": "VF-DD395EF424",
+    "cliente": "Paciente Concurrente 1",
+    "servicio": "neurologica",
+    "fecha": "2026-11-28",
+    "hora": "10:00",
+    "estado": "activa",
+    "fisioterapeuta_asignado": "carlos"
+  }
+]
+
+--- Verificación en SQLite: Tabla 'propietarios_telegram' ---
+[
+  {
+    "codigo": "VF-DD395EF424",
+    "usuario_id": 10000001
+  }
+]
+
+--- Verificación en SQLite: Tabla 'operaciones_telegram' (ambos recibos registrados) ---
+[
+  {
+    "solicitud_id": "11111111111111111111111111111111",
+    "usuario_id": 10000001,
+    "estado_http": 201
+  },
+  {
+    "solicitud_id": "22222222222222222222222222222222",
+    "usuario_id": 10000002,
+    "estado_http": 409
+  }
+]
+
+======================================================================
+INICIANDO SUITE DE PRUEBAS DE TELEGRAM (CLASE 13) — VLFisioterapia
+======================================================================
+
+[1/5] Probando autenticación (X-API-Key), claves y autorización de usuario...
+  ✓ Autenticación (401), desactivación segura (503) e identidad (422) verificadas!
+
+[2/5] Probando catálogo (/telegram/servicios) y disponibilidad real...
+  ✓ Catálogo VLFisioterapia (precios COP) y disponibilidad horaria verificados!
+
+[3/5] Probando ciclo completo: crear, propiedad, bloqueo ajeno, modificar, cancelar...
+  ✓ Creación, asociación de propiedad, aislamiento de cuenta, resumen obsoleto (409) y cancelación OK!
+
+[4/5] Probando idempotencia, recibos persistentes y protección contra reintentos...
+  ✓ Idempotencia estricta, detección de datos alterados (409) y recuperación de recibos OK!
+
+[5/5] Probando concurrencia multihilo (T22) y lógica de bot / T24 respuesta perdida...
+  ✓ Concurrencia real (201 vs 409), rechazo de botones vencidos/antiguos y simulación T24 OK!
+
+======================================================================
+¡TODAS LAS PRUEBAS DEL CANAL TELEGRAM PASARON EXITOSAMENTE (100% OK)!
+======================================================================

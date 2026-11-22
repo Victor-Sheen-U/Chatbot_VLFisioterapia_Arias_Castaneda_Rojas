@@ -1,0 +1,134 @@
+======================================================================
+EVIDENCIA T18 — VERIFICACIÓN EN SQLITE DE RESERVA CREADA Y CONFIRMADA EN TELEGRAM
+Fecha de verificación: 2026-11-21T17:14:40.904882-05:00
+Código de reserva creada por Cuenta A: VF-3DFB92480C
+Referencia de solicitud (solicitud_id): e3baacf48ac74d379dd09fda7573a245
+======================================================================
+
+1. Registro completo insertado en la tabla 'reservas' (16 columnas):
+{
+  "codigo": "VF-3DFB92480C",
+  "cliente": "Valeria",
+  "servicio": "deportiva",
+  "fecha": "2026-11-25",
+  "hora": "11:00",
+  "duracion_minutos": 45,
+  "estado": "activa",
+  "fisioterapeuta": "valeria",
+  "fisioterapeuta_asignado": "valeria",
+  "telefono": null,
+  "motivo_consulta": null,
+  "precio_cop": 70000,
+  "creada_en": "2026-11-21T16:43:57.258072-05:00",
+  "cancelada_en": null,
+  "reprogramada_en": null,
+  "historial_reprogramaciones": "[]"
+}
+
+2. Vínculo de propiedad insertado en la tabla 'propietarios_telegram':
+{
+  "codigo": "VF-3DFB92480C",
+  "usuario_id": 7599925239
+}
+
+3. Recibo idempotente insertado en la tabla 'operaciones_telegram' (HTTP 201):
+{
+  "solicitud_id": "e3baacf48ac74d379dd09fda7573a245",
+  "usuario_id": 7599925239,
+  "huella": "3c3b993c14562fa19aba63c6e11f1ab422c3c5081dfa15e1d76a5bba83072c57",
+  "estado_http": 201,
+  "respuesta": {
+    "ok": true,
+    "solicitud_id": "e3baacf48ac74d379dd09fda7573a245",
+    "accion": "crear",
+    "reserva": {
+      "codigo": "VF-3DFB92480C",
+      "cliente": "Valeria",
+      "servicio": "deportiva",
+      "fecha": "2026-11-25",
+      "hora": "11:00",
+      "duracion_minutos": 45,
+      "estado": "activa",
+      "fisioterapeuta": "valeria",
+      "fisioterapeuta_asignado": "valeria",
+      "telefono": null,
+      "motivo_consulta": null,
+      "precio_cop": 70000,
+      "creada_en": "2026-11-21T16:43:57.258072-05:00",
+      "cancelada_en": null,
+      "reprogramada_en": null,
+      "historial_reprogramaciones": []
+    },
+    "referencia": "f3722b05d70601ba9cf587d62690382870c2f338581f9ce34cf9f4e3c6e678b9"
+  }
+}
+
+4. Estado general de la tabla 'reservas' (Total filas = 6: 5 semilla + 1 creada en T18):
+[
+  {
+    "codigo": "VF-BBD3FF0D07",
+    "cliente": "Paciente Demo 1",
+    "servicio": "evaluacion",
+    "fecha": "2026-11-23",
+    "hora": "09:00",
+    "duracion_minutos": 60,
+    "estado": "activa",
+    "fisioterapeuta_asignado": "mariana",
+    "precio_cop": 80000
+  },
+  {
+    "codigo": "VF-19BE4C5B11",
+    "cliente": "Paciente Demo 2",
+    "servicio": "postural",
+    "fecha": "2026-11-23",
+    "hora": "09:00",
+    "duracion_minutos": 45,
+    "estado": "activa",
+    "fisioterapeuta_asignado": "valeria",
+    "precio_cop": 60000
+  },
+  {
+    "codigo": "VF-54F07508E1",
+    "cliente": "Paciente Demo 3",
+    "servicio": "puncion_seca",
+    "fecha": "2026-11-23",
+    "hora": "11:00",
+    "duracion_minutos": 45,
+    "estado": "cancelada",
+    "fisioterapeuta_asignado": "carlos",
+    "precio_cop": 75000
+  },
+  {
+    "codigo": "VF-5CAFE1E9EF",
+    "cliente": "Paciente Demo 4",
+    "servicio": "deportiva",
+    "fecha": "2026-11-24",
+    "hora": "10:00",
+    "duracion_minutos": 45,
+    "estado": "activa",
+    "fisioterapeuta_asignado": "mariana",
+    "precio_cop": 70000
+  },
+  {
+    "codigo": "VF-07A30DF37E",
+    "cliente": "Paciente Demo 5",
+    "servicio": "neurologica",
+    "fecha": "2026-11-25",
+    "hora": "14:00",
+    "duracion_minutos": 60,
+    "estado": "activa",
+    "fisioterapeuta_asignado": "carlos",
+    "precio_cop": 85000
+  },
+  {
+    "codigo": "VF-3DFB92480C",
+    "cliente": "Valeria",
+    "servicio": "deportiva",
+    "fecha": "2026-11-25",
+    "hora": "11:00",
+    "duracion_minutos": 45,
+    "estado": "activa",
+    "fisioterapeuta_asignado": "valeria",
+    "precio_cop": 70000
+  }
+]

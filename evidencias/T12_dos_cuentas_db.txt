@@ -1,0 +1,43 @@
+======================================================================
+EVIDENCIA T12 — DOS CUENTAS INDEPENDIENTES Y RECHAZO 404 A RESERVA AJENA
+Fecha de ejecución: 2026-11-21T22:07:52.770999-05:00
+Cuenta A (Principal): usuario_id=7599925239 (propietaria de VF-3DFB92480C)
+Cuenta B (Secundaria): usuario_id=8888888802 (cuenta ajena)
+======================================================================
+
+1. Flujo en Cuenta A ('Hola me llamo Laura Gómez y quiero agendar traumatológica'):
+   Respuesta a Cuenta A: Para continuar necesito los siguientes datos: fecha, hora
+   Último plan en memoria de Cuenta A: {"plan": {"accion": "crear", "cliente": "Laura Gómez", "servicio": "traumatologica", "fecha": "", "hora": "", "codigo": "", "fisioterapeuta": ""}, "resultado": "Para continuar necesito los siguientes datos: fecha, hora"}
+
+2. Flujo independiente en Cuenta B ('Hola soy Andrés Pérez y quiero consultar disponibilidad de postural el 2026-11-25'):
+   Respuesta a Cuenta B:
+   Disponibilidad para postural el 2026-11-25:
+07:00, 07:30, 08:00, 08:30, 09:00, 09:30, 10:00, 10:30, 11:00, 11:30, 12:00, 12:30, 13:00, 13:30, 14:00, 14:30, 15:00, 15:30, 16:00, 16:30, 17:00, 17:30, 18:00
+   -> Se comprueba que los historiales y planes de Cuenta A y Cuenta B no se mezclan.
+
+3. Intento de Cuenta B (usuario_id=8888888802) de consultar la reserva de Cuenta A ('/reserva VF-3DFB92480C'):
+   Petición: GET http://127.0.0.1:8012/telegram/reservas/VF-3DFB92480C (X-Telegram-User: 8888888802)
+   Respuesta de FastAPI / Bot (HTTP 404): Reserva no disponible para este usuario
+
+4. Verificación en SQLite (propietarios_telegram y reservas sin alteración):
+{
+  "reserva": {
+    "codigo": "VF-3DFB92480C",
+    "cliente": "Valeria",
+    "servicio": "deportiva",
+    "fecha": "2026-11-25",
+    "hora": "11:00",
+    "duracion_minutos": 45,
+    "estado": "activa",
+    "fisioterapeuta": "valeria",
+    "fisioterapeuta_asignado": "valeria",
+    "telefono": null,
+    "motivo_consulta": null,
+    "precio_cop": 70000,
+    "creada_en": "2026-11-21T16:43:57.258072-05:00",
+    "cancelada_en": null,
+    "reprogramada_en": null,
+    "historial_reprogramaciones": "[]"
+  },
+  "propietario_id": 7599925239
+}

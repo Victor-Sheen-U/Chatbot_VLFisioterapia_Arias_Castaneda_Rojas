@@ -1,0 +1,16 @@
+======================================================================
+EVIDENCIA T25 — ENTRADAS INVÁLIDAS (FECHA PASADA, DOMINGO/FUERA DE HORARIO) Y API APAGADA
+Fecha de ejecución: 2026-11-21T22:12:27.291278-05:00
+Cuenta: Cuenta A (Principal) (usuario_id=7599925239)
+======================================================================
+
+1. Sub-caso 25a (1) — Consulta en fecha pasada ('¿Hay disponibilidad de valoración el 2025-05-10?'):
+   Respuesta controlada (HTTP 422): 'La fecha seleccionada ya pasó. Seleccione una fecha futura.'
+
+2. Sub-caso 25a (2) — Confirmación de cita en domingo y fuera de horario ('2026-11-22 a las 20:00'):
+   Respuesta controlada (HTTP 422): 'La API de VLFisioterapia rechazó la operación: El negocio está cerrado ese día'
+
+3. Sub-caso 25b — Servidor FastAPI detenido (puerto 8012 apagado) y consulta '¿Qué servicios ofrecen?':
+   Respuesta controlada del bot (captura URLError sin caerse ni inventar datos): 'No pude conectar con el servicio. Todavía no se envió ninguna escritura.'
+
+4. Verificación en SQLite: Filas antes=6, Filas después=6 (base de datos intacta).

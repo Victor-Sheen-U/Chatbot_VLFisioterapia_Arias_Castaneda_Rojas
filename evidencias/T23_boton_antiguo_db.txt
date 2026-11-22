@@ -1,0 +1,32 @@
+======================================================================
+EVIDENCIA T23 — RECHAZO DE BOTÓN ANTIGUO, PROPUESTA DESCARTADA Y VENCIMIENTO TTL
+Fecha de ejecución: 2026-11-21T22:12:23.692189-05:00
+Cuenta: Cuenta A (Principal) (usuario_id=7599925239)
+======================================================================
+
+1. Propuesta 1 generada (09:00, solicitud_id=9c24658aa6554d8ca7a62bf9e80ae6b8):
+Propuesta de operación: CREAR
+• Paciente: Laura Gómez
+• Tratamiento: puncion_seca
+• Fecha: 2026-11-26
+• Hora: 09:00
+• Referencia de solicitud: 9c24658aa6554d8ca7a62bf9e80ae6b8
+Revisa los datos y pulsa Confirmar para ejecutar en la agenda o Descartar para cancelarla.
+
+2. Propuesta 2 que reemplaza a la anterior ('Mejor a las 11:00', solicitud_id=68e5682a80514676a934dfc18570ddf3):
+Propuesta de operación: CREAR
+• Paciente: Laura Gómez
+• Tratamiento: puncion_seca
+• Fecha: 2026-11-26
+• Hora: 11:00
+• Referencia de solicitud: 68e5682a80514676a934dfc18570ddf3
+Revisa los datos y pulsa Confirmar para ejecutar en la agenda o Descartar para cancelarla.
+
+3. Clic en el botón [Confirmar] antiguo de la Propuesta 1 (callback_data='confirmar:9c24658aa6554d8ca7a62bf9e80ae6b8'):
+   Respuesta del bot: 'Ese resumen ya no es el vigente.'
+   Efecto: La Propuesta 1 es rechazada y la Propuesta 2 no se ejecuta.
+
+4. Tras ejecutar '/descartar', nuevo clic sobre 'confirmar:68e5682a80514676a934dfc18570ddf3':
+   Respuesta del bot: 'No hay una solicitud pendiente en esta conversación.'
+
+5. Verificación en SQLite: Filas antes=6, Filas después=6 (0 duplicados ni inserciones).

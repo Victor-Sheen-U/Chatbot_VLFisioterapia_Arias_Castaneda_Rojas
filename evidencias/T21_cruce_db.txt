@@ -1,0 +1,42 @@
+======================================================================
+EVIDENCIA T21 — RECHAZO DE CRUCE DE HORARIO POR FISIOTERAPEUTA (HTTP 409)
+Fecha de ejecución: 2026-11-21T22:07:53.541953-05:00
+Reserva activa previa de Cuenta A: VF-3DFB92480C (deportiva, 45 min, 2026-11-25 11:00–11:45, fisio=valeria)
+Solicitud en conflicto de Cuenta B (usuario_id=8888888802): deportiva con valeria el 2026-11-25 a las 11:00
+======================================================================
+
+1. Resumen presentado a Cuenta B antes de confirmar:
+Propuesta de operación: CREAR
+• Paciente: Andrés Pérez
+• Tratamiento: deportiva
+• Fecha: 2026-11-25
+• Hora: 11:00
+• Especialista solicitado: valeria
+• Referencia de solicitud: bc65cd684b904e9f904b1ab77b96f923
+Revisa los datos y pulsa Confirmar para ejecutar en la agenda o Descartar para cancelarla.
+
+2. Respuesta tras pulsar botón [Confirmar] (POST /telegram/operaciones -> HTTP 409 Conflict):
+   La API de VLFisioterapia rechazó la operación: El horario o profesional seleccionado no está disponible en esa fecha y hora.
+
+3. Conteo de filas en tabla 'reservas' ANTES del intento: 6
+   Conteo de filas en tabla 'reservas' DESPUÉS del rechazo 409: 6 (datos previos intactos)
+
+4. Estado intacto de la reserva previa de Cuenta A en SQLite:
+{
+  "codigo": "VF-3DFB92480C",
+  "cliente": "Valeria",
+  "servicio": "deportiva",
+  "fecha": "2026-11-25",
+  "hora": "11:00",
+  "duracion_minutos": 45,
+  "estado": "activa",
+  "fisioterapeuta": "valeria",
+  "fisioterapeuta_asignado": "valeria",
+  "telefono": null,
+  "motivo_consulta": null,
+  "precio_cop": 70000,
+  "creada_en": "2026-11-21T16:43:57.258072-05:00",
+  "cancelada_en": null,
+  "reprogramada_en": null,
+  "historial_reprogramaciones": "[]"
+}

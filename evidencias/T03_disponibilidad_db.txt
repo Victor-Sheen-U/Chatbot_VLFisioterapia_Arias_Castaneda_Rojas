@@ -1,0 +1,99 @@
+======================================================================
+EVIDENCIA T03 — DISPONIBILIDAD POR ESPECIALISTA EN API Y SQLITE (F1 = 2026-11-23)
+Fecha de verificación: 2026-11-21T16:06:38.314741-05:00
+Endpoint consultado: GET http://127.0.0.1:8012/telegram/disponibilidad?fecha=2026-11-23&servicio=evaluacion&fisioterapeuta=mariana
+Cabecera autenticación: X-API-Key: [SANITIZADA]
+======================================================================
+
+1. Filas en SQLite (reservas.db) para la fecha 2026-11-23:
+[
+  {
+    "codigo": "VF-BBD3FF0D07",
+    "cliente": "Paciente Demo 1",
+    "servicio": "evaluacion",
+    "fecha": "2026-11-23",
+    "hora": "09:00",
+    "duracion_minutos": 60,
+    "estado": "activa",
+    "fisioterapeuta_asignado": "mariana"
+  },
+  {
+    "codigo": "VF-19BE4C5B11",
+    "cliente": "Paciente Demo 2",
+    "servicio": "postural",
+    "fecha": "2026-11-23",
+    "hora": "09:00",
+    "duracion_minutos": 45,
+    "estado": "activa",
+    "fisioterapeuta_asignado": "valeria"
+  },
+  {
+    "codigo": "VF-54F07508E1",
+    "cliente": "Paciente Demo 3",
+    "servicio": "puncion_seca",
+    "fecha": "2026-11-23",
+    "hora": "11:00",
+    "duracion_minutos": 45,
+    "estado": "cancelada",
+    "fisioterapeuta_asignado": "carlos"
+  }
+]
+
+2. Respuesta real de FastAPI (/telegram/disponibilidad):
+{
+  "fecha": "2026-11-23",
+  "servicio": "evaluacion",
+  "fisioterapeuta": "mariana",
+  "duracion_minutos": 60,
+  "horarios_disponibles": [
+    "07:00",
+    "07:30",
+    "08:00",
+    "10:00",
+    "10:30",
+    "11:00",
+    "11:30",
+    "12:00",
+    "12:30",
+    "13:00",
+    "13:30",
+    "14:00",
+    "14:30",
+    "15:00",
+    "15:30",
+    "16:00",
+    "16:30",
+    "17:00",
+    "17:30",
+    "18:00"
+  ],
+  "horas": [
+    "07:00",
+    "07:30",
+    "08:00",
+    "10:00",
+    "10:30",
+    "11:00",
+    "11:30",
+    "12:00",
+    "12:30",
+    "13:00",
+    "13:30",
+    "14:00",
+    "14:30",
+    "15:00",
+    "15:30",
+    "16:00",
+    "16:30",
+    "17:00",
+    "17:30",
+    "18:00"
+  ]
+}
+
+3. Análisis de coherencia:
+- Mariana tiene activa la cita semilla VF-BBD3FF0D07 (evaluacion, 60 min) de 09:00 a 10:00.
+- Para una sesión de 60 min ('evaluacion'), los turnos 08:30 (08:30–09:30) y 09:00 (09:00–10:00) se solapan con 09:00–10:00.
+- ¿'08:30' ausente en horarios_disponibles?: True
+- ¿'09:00' ausente en horarios_disponibles?: True
+- ¿'08:00' y '10:00' presentes (adyacencia exacta)?: True

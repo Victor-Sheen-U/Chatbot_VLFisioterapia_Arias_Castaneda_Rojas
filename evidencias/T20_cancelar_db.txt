@@ -1,0 +1,52 @@
+======================================================================
+EVIDENCIA T20 — CANCELACIÓN LÓGICA DE RESERVA PROPIA Y LIBERACIÓN DE HORARIO
+Fecha de ejecución: 2026-11-21T22:07:55.228463-05:00
+Cuenta: Cuenta A (Principal) (usuario_id=7599925239) | Código: VF-3DFB92480C
+======================================================================
+
+1. ¿Horario 15:00 disponible para valeria el 2026-11-25 ANTES de cancelar?: False
+
+2. Resumen de propuesta CANCELAR presentado en Telegram:
+Propuesta de operación: CANCELAR
+• Paciente: Valeria
+• Tratamiento: deportiva
+• Fecha: 2026-11-25
+• Hora: 15:00
+• Código de cita: VF-3DFB92480C
+• Referencia de solicitud: b532bde7508242a5a2f581e864e632f6
+Revisa los datos y pulsa Confirmar para ejecutar en la agenda o Descartar para cancelarla.
+
+3. Recibo devuelto tras pulsar [Confirmar] (HTTP 200 OK):
+¡Operación CANCELAR registrada con éxito! 🎉
+• Código: VF-3DFB92480C
+• Paciente: Valeria
+• Tratamiento: deportiva
+• Fecha: 2026-11-25
+• Hora: 15:00
+• Estado: CANCELADA
+• Especialista: valeria
+• Tarifa: $70.000 COP
+• Referencia de operación: b532bde7508242a5a2f581e864e632f6
+• Consulta directa: /reserva VF-3DFB92480C
+
+4. ¿Horario 15:00 disponible para valeria el 2026-11-25 DESPUÉS de cancelar?: True
+
+5. Registro en SQLite (estado='cancelada', cancelada_en registrado, fila conservada para trazabilidad):
+{
+  "codigo": "VF-3DFB92480C",
+  "cliente": "Valeria",
+  "servicio": "deportiva",
+  "fecha": "2026-11-25",
+  "hora": "15:00",
+  "duracion_minutos": 45,
+  "estado": "cancelada",
+  "fisioterapeuta": "valeria",
+  "fisioterapeuta_asignado": "valeria",
+  "telefono": null,
+  "motivo_consulta": null,
+  "precio_cop": 70000,
+  "creada_en": "2026-11-21T16:43:57.258072-05:00",
+  "cancelada_en": "2026-11-21T22:07:55.202622-05:00",
+  "reprogramada_en": "2026-11-21T22:07:54.438695-05:00",
+  "historial_reprogramaciones": "[{\"fecha_anterior\": \"2026-11-25\", \"hora_anterior\": \"11:00\", \"modificada_en\": \"2026-11-21T22:07:54.438695-05:00\"}]"
+}

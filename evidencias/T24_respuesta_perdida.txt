@@ -1,0 +1,70 @@
+======================================================================
+EVIDENCIA T24 — SIMULACIÓN DE RESPUESTA PERDIDA Y RECUPERACIÓN CON /estado
+Fecha de ejecución: 2026-11-21T15:47:33.221429-05:00
+Método: Ejecución automatizada del interceptor de simular_respuesta_perdida.py contra FastAPI + SQLite
+======================================================================
+
+[Paso 1] Propuesta preparada y confirmada por usuario_id=500001:
+  solicitud_id: 7d3e9dc0a348403aa4c42fb9222e241e
+  plan: {"accion": "crear", "cliente": "Paciente Prueba T24", "servicio": "postural", "fecha": "2026-11-30", "hora": "14:00", "codigo": "", "fisioterapeuta": "valeria"}
+
+[Paso 2 - SIMULADOR T24]: La API procesó y guardó la reserva en SQLite (HTTP 201).
+[Paso 2 - SIMULADOR T24]: Se intercepta la respuesta HTTP y se lanza TimeoutError al bot.
+
+[Paso 3 - Bot de Telegram]: Excepción capturada -> Simulación T24: Respuesta de red perdida después de guardar en base de datos.
+  Nuevo estado de la propuesta en chat_data: 'incierta'
+  Mensaje enviado al paciente: 'No pude verificar el resultado inmediatamente debido a un problema de red. Conservo la misma referencia de operación: 7d3e9dc0a348403aa4c42fb9222e241e. Usa /estado para recuperar el recibo guardado antes de intentar otra operación.'
+
+[Paso 4 - Comando /estado 7d3e9dc0a348403aa4c42fb9222e241e]: Consultando GET /telegram/operaciones/7d3e9dc0a348403aa4c42fb9222e241e...
+--- Recibo recuperado desde FastAPI (/telegram/operaciones/{solicitud_id}) ---
+{
+  "estado_http": 201,
+  "resultado": {
+    "ok": true,
+    "solicitud_id": "7d3e9dc0a348403aa4c42fb9222e241e",
+    "accion": "crear",
+    "reserva": {
+      "codigo": "VF-6A95AB2B63",
+      "cliente": "Paciente Prueba T24",
+      "servicio": "postural",
+      "fecha": "2026-11-30",
+      "hora": "14:00",
+      "duracion_minutos": 45,
+      "estado": "activa",
+      "fisioterapeuta": "valeria",
+      "fisioterapeuta_asignado": "valeria",
+      "telefono": null,
+      "motivo_consulta": null,
+      "precio_cop": 60000,
+      "creada_en": "2026-11-21T15:47:33.236376-05:00",
+      "cancelada_en": null,
+      "reprogramada_en": null,
+      "historial_reprogramaciones": []
+    },
+    "referencia": "da5ae99b768bbcdbde537a75cc80120f8c389a6d5ba227d6dccd23752aa755be"
+  }
+}
+
+--- Verificación en SQLite: Tabla 'reservas' (exactamente 1 fila, sin duplicados) ---
+[
+  {
+    "codigo": "VF-6A95AB2B63",
+    "cliente": "Paciente Prueba T24",
+    "servicio": "postural",
+    "fecha": "2026-11-30",
+    "hora": "14:00",
+    "estado": "activa",
+    "fisioterapeuta_asignado": "valeria"
+  }
+]
+
+--- Verificación en SQLite: Tabla 'operaciones_telegram' (1 recibo persistido) ---
+[
+  {
+    "solicitud_id": "7d3e9dc0a348403aa4c42fb9222e241e",
+    "usuario_id": 500001,
+    "estado_http": 201
+  }
+]
+
+✅ RESULTADO T24: Recibo recuperado exitosamente con /estado sin duplicar la reserva.
