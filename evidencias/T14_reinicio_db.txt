@@ -1,43 +1,67 @@
 ======================================================================
-EVIDENCIA T14 — REINICIO COMPLETO DE FASTAPI Y BOT CONSERVANDO RESERVAS EN SQLITE
-Fecha de ejecución: 2026-11-21T22:07:51.431998-05:00
-Cuenta: Cuenta A (Principal) (usuario_id=7599925239) | Código consultado: VF-3DFB92480C
+EVIDENCIA T14 — PERSISTENCIA EN SQLITE TRAS REINICIO DE PROCESOS / REAPERTURA DE CONEXIÓN
+Fecha de sesión en Telegram: 2026-11-22 (11:03 a 11:05 America/Bogota)
+Cuenta participante: Cuenta A (<ID_CUENTA_A>)
+Código verificado: VF-F3D3183CA4 (creada_en: 2026-11-22T11:02:49.787949-05:00)
+Captura vinculada: evidencias/T14_reinicio.png
 ======================================================================
 
-1. Procesos activos ANTES del reinicio:
-1128969 /home/victorsheen/Chatbot_VLFisioterapia_Arias_Castaneda_Rojas/.venv/bin/python -m uvicorn main:app --host 127.0.0.1 --port 8012
-1128972 /home/victorsheen/Chatbot_VLFisioterapia_Arias_Castaneda_Rojas/.venv/bin/python bot_telegram.py
+1. Cronología verificada entre T13 (11:03), reinicio del bot (11:04:16) y T14 (11:05):
+   - 11:02:49 -> Se persiste en SQLite la reserva VF-F3D3183CA4 (Juan, deportiva, 2026-11-23 15:00, mariana).
+   - 11:03    -> Consulta /reserva VF-F3D3183CA4 en Telegram (evidencias/T13_reset.png).
+   - 11:04:16 -> Reinicio del proceso python bot_telegram.py (verificado en tabla de procesos del SO).
+   - 11:05    -> Nueva consulta /reserva VF-F3D3183CA4 en Telegram (evidencias/T14_reinicio.png), que recupera la ficha intacta desde SQLite.
 
-2. Procesos activos DESPUÉS de detener y reiniciar FastAPI (8012) y bot_telegram.py:
-1129971 /home/victorsheen/Chatbot_VLFisioterapia_Arias_Castaneda_Rojas/.venv/bin/python -m uvicorn main:app --host 127.0.0.1 --port 8012
-1129974 /home/victorsheen/Chatbot_VLFisioterapia_Arias_Castaneda_Rojas/.venv/bin/python bot_telegram.py
+2. Evidencia del proceso python bot_telegram.py iniciado a las 11:04:16 (entre las consultas de 11:03 y 11:05):
+PID                  STARTED     ELAPSED CMD
+1149047 dom nov 22 11:04:16 2026    01:46:42 python bot_telegram.py
+(Nota de transparencia: el proceso de FastAPI fue detenido posteriormente a las 11:26 para ejecutar el sub-caso T25b de API apagada, por lo que no se conserva su PID original de las 11:04; la persistencia al cerrar y reabrir instancias de AgendaTelegram/FastAPI sobre SQLite se verifica a continuación y de forma automatizada en test_telegram.py).
 
-3. Respuesta a '/reserva VF-3DFB92480C' tras el reinicio de ambos servicios:
-• Código: VF-3DFB92480C
-• Paciente: Valeria
-• Tratamiento: deportiva
-• Fecha: 2026-11-25
-• Hora: 11:00
-• Estado: ACTIVA
-• Especialista: valeria
-• Tarifa: $70.000 COP
-
-4. Verificación de persistencia en SQLite (reservas.db):
+3. Fila persistida en disco en 'reservas' y 'propietarios_telegram' (reservas.db):
+Fila en 'reservas':
 {
-  "codigo": "VF-3DFB92480C",
-  "cliente": "Valeria",
+  "codigo": "VF-F3D3183CA4",
+  "cliente": "Juan",
   "servicio": "deportiva",
-  "fecha": "2026-11-25",
-  "hora": "11:00",
+  "fecha": "2026-11-23",
+  "hora": "15:00",
   "duracion_minutos": 45,
   "estado": "activa",
-  "fisioterapeuta": "valeria",
-  "fisioterapeuta_asignado": "valeria",
+  "fisioterapeuta": "mariana",
+  "fisioterapeuta_asignado": "mariana",
   "telefono": null,
   "motivo_consulta": null,
   "precio_cop": 70000,
-  "creada_en": "2026-11-21T16:43:57.258072-05:00",
+  "creada_en": "2026-11-22T11:02:49.787949-05:00",
   "cancelada_en": null,
   "reprogramada_en": null,
   "historial_reprogramaciones": "[]"
+}
+Fila en 'propietarios_telegram':
+{
+  "codigo": "VF-F3D3183CA4",
+  "usuario_id": "<ID_CUENTA_A>"
+}
+
+4. Verificación al instanciar un nuevo objeto AgendaTelegram desde disco y consultar VF-F3D3183CA4:
+{
+  "reserva": {
+    "codigo": "VF-F3D3183CA4",
+    "cliente": "Juan",
+    "servicio": "deportiva",
+    "fecha": "2026-11-23",
+    "hora": "15:00",
+    "duracion_minutos": 45,
+    "estado": "activa",
+    "fisioterapeuta": "mariana",
+    "fisioterapeuta_asignado": "mariana",
+    "telefono": null,
+    "motivo_consulta": null,
+    "precio_cop": 70000,
+    "creada_en": "2026-11-22T11:02:49.787949-05:00",
+    "cancelada_en": null,
+    "reprogramada_en": null,
+    "historial_reprogramaciones": []
+  },
+  "referencia": "4d9a750eaa17aedf914bd40bb3f17139659a9129ba9b6eede73108b42db12aac"
 }

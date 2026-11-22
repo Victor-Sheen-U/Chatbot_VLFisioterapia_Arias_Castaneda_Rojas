@@ -1,69 +1,93 @@
 ======================================================================
-EVIDENCIA T19 — MODIFICAR (REPROGRAMAR) RESERVA PROPIA CON HUELLA SHA-256
-Fecha de ejecución: 2026-11-21T22:07:54.469346-05:00
-Cuenta: Cuenta A (Principal) (usuario_id=7599925239) | Código: VF-3DFB92480C
-Huella SHA-256 (referencia previa validada): f3722b05d70601ba9cf587d62690382870c2f338581f9ce34cf9f4e3c6e678b9
+EVIDENCIA T19 — MODIFICAR (REPROGRAMAR) RESERVA PROPIA Y CONFIRMAR EN TELEGRAM
+Fecha de sesión en Telegram: 2026-11-22 (11:15 a 11:16 America/Bogota)
+Cuenta participante: Cuenta A (<ID_CUENTA_A>)
+Código de reserva reprogramada: VF-84FAC21E56 (Paciente: Luis, traumatologica, mariana)
+Referencia de solicitud (solicitud_id): e49e2fa966044c828fea9947a28b0936
+Capturas vinculadas:
+  - evidencias/T19_modificar_resumen.png
+  - evidencias/T19_modificar_resultado.png
 ======================================================================
 
-1. Estado de la reserva en SQLite ANTES de modificar:
+1. Estado previo de VF-84FAC21E56 al crearse a las 11:12:43 (solicitud_id: 0899aa48fa3947aa9f58c63293d0dff3):
+   - Fecha original: 2026-11-24
+   - Hora original:  16:00
+   - Huella SHA-256 inicial (referencia validada antes de modificar):
+     6f98b90c1c7001cc49b940c42a72d70275d3628cca44d38018a12d40c79c9806
+   - Recibo de creación en 'operaciones_telegram':
 {
-  "codigo": "VF-3DFB92480C",
-  "cliente": "Valeria",
-  "servicio": "deportiva",
-  "fecha": "2026-11-25",
-  "hora": "11:00",
-  "duracion_minutos": 45,
-  "estado": "activa",
-  "fisioterapeuta": "valeria",
-  "fisioterapeuta_asignado": "valeria",
-  "telefono": null,
-  "motivo_consulta": null,
-  "precio_cop": 70000,
-  "creada_en": "2026-11-21T16:43:57.258072-05:00",
-  "cancelada_en": null,
-  "reprogramada_en": null,
-  "historial_reprogramaciones": "[]"
+  "solicitud_id": "0899aa48fa3947aa9f58c63293d0dff3",
+  "usuario_id": "<ID_CUENTA_A>",
+  "huella": "78244034ff862c9893da65823ce9ab76802e99a9609e37eac2dfc2d1255c3ae9",
+  "estado_http": 201,
+  "respuesta": {
+    "ok": true,
+    "solicitud_id": "0899aa48fa3947aa9f58c63293d0dff3",
+    "accion": "crear",
+    "reserva": {
+      "codigo": "VF-84FAC21E56",
+      "cliente": "Luis",
+      "servicio": "traumatologica",
+      "fecha": "2026-11-24",
+      "hora": "16:00",
+      "duracion_minutos": 45,
+      "estado": "activa",
+      "fisioterapeuta": "mariana",
+      "fisioterapeuta_asignado": "mariana",
+      "telefono": null,
+      "motivo_consulta": null,
+      "precio_cop": 65000,
+      "creada_en": "2026-11-22T11:12:43.299115-05:00",
+      "cancelada_en": null,
+      "reprogramada_en": null,
+      "historial_reprogramaciones": []
+    },
+    "referencia": "6f98b90c1c7001cc49b940c42a72d70275d3628cca44d38018a12d40c79c9806"
+  }
 }
 
-2. Resumen de propuesta MODIFICAR presentado en Telegram:
-Propuesta de operación: MODIFICAR
-• Paciente: 
-• Tratamiento: deportiva
-• Fecha: 2026-11-25
-• Hora: 15:00
-• Código de cita: VF-3DFB92480C
-• Referencia de solicitud: 51149206436540d38f8bdecde4d1f5af
-Revisa los datos y pulsa Confirmar para ejecutar en la agenda o Descartar para cancelarla.
-
-3. Recibo devuelto tras pulsar [Confirmar] (HTTP 200 OK):
-¡Operación MODIFICAR registrada con éxito! 🎉
-• Código: VF-3DFB92480C
-• Paciente: Valeria
-• Tratamiento: deportiva
-• Fecha: 2026-11-25
-• Hora: 15:00
-• Estado: ACTIVA
-• Especialista: valeria
-• Tarifa: $70.000 COP
-• Referencia de operación: 51149206436540d38f8bdecde4d1f5af
-• Consulta directa: /reserva VF-3DFB92480C
-
-4. Estado de la reserva en SQLite DESPUÉS de modificar (nueva hora 15:00 e historial_reprogramaciones actualizado):
+2. Recibo de la operación MODIFICAR persistido en 'operaciones_telegram' a las 11:16:07 (HTTP 200):
 {
-  "codigo": "VF-3DFB92480C",
-  "cliente": "Valeria",
-  "servicio": "deportiva",
-  "fecha": "2026-11-25",
-  "hora": "15:00",
-  "duracion_minutos": 45,
-  "estado": "activa",
-  "fisioterapeuta": "valeria",
-  "fisioterapeuta_asignado": "valeria",
-  "telefono": null,
-  "motivo_consulta": null,
-  "precio_cop": 70000,
-  "creada_en": "2026-11-21T16:43:57.258072-05:00",
-  "cancelada_en": null,
-  "reprogramada_en": "2026-11-21T22:07:54.438695-05:00",
-  "historial_reprogramaciones": "[{\"fecha_anterior\": \"2026-11-25\", \"hora_anterior\": \"11:00\", \"modificada_en\": \"2026-11-21T22:07:54.438695-05:00\"}]"
+  "solicitud_id": "e49e2fa966044c828fea9947a28b0936",
+  "usuario_id": "<ID_CUENTA_A>",
+  "huella": "0863b14bfee3b34da2360d28f419b4ab6f70f69b5cce73ea12eb80b139aba3c8",
+  "estado_http": 200,
+  "respuesta": {
+    "ok": true,
+    "solicitud_id": "e49e2fa966044c828fea9947a28b0936",
+    "accion": "modificar",
+    "reserva": {
+      "codigo": "VF-84FAC21E56",
+      "cliente": "Luis",
+      "servicio": "traumatologica",
+      "fecha": "2026-11-25",
+      "hora": "15:00",
+      "duracion_minutos": 45,
+      "estado": "activa",
+      "fisioterapeuta": "mariana",
+      "fisioterapeuta_asignado": "mariana",
+      "telefono": null,
+      "motivo_consulta": null,
+      "precio_cop": 65000,
+      "creada_en": "2026-11-22T11:12:43.299115-05:00",
+      "cancelada_en": null,
+      "reprogramada_en": "2026-11-22T11:16:07.273673-05:00",
+      "historial_reprogramaciones": [
+        {
+          "fecha_anterior": "2026-11-24",
+          "hora_anterior": "16:00",
+          "modificada_en": "2026-11-22T11:16:07.273673-05:00"
+        }
+      ]
+    },
+    "referencia": "b39484a4e2fc31f9dc648cb3ea2a9e2ff2519a9afe3f7b82fee3a2ce2e462b60"
+  }
 }
+
+3. Trazabilidad en la fila VF-84FAC21E56 de la tabla 'reservas':
+   - nueva fecha: 2026-11-25
+   - nueva hora:  15:00
+   - reprogramada_en: 2026-11-22T11:16:07.273673-05:00
+   - historial_reprogramaciones: [{"fecha_anterior": "2026-11-24", "hora_anterior": "16:00", "modificada_en": "2026-11-22T11:16:07.273673-05:00"}]
+   - Nueva huella SHA-256 tras modificar:
+     b39484a4e2fc31f9dc648cb3ea2a9e2ff2519a9afe3f7b82fee3a2ce2e462b60

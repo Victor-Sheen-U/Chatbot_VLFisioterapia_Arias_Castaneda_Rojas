@@ -28,13 +28,13 @@ Referencia de solicitud (solicitud_id): e3baacf48ac74d379dd09fda7573a245
 2. Vínculo de propiedad insertado en la tabla 'propietarios_telegram':
 {
   "codigo": "VF-3DFB92480C",
-  "usuario_id": 7599925239
+  "usuario_id": "<ID_CUENTA_A>"
 }
 
 3. Recibo idempotente insertado en la tabla 'operaciones_telegram' (HTTP 201):
 {
   "solicitud_id": "e3baacf48ac74d379dd09fda7573a245",
-  "usuario_id": 7599925239,
+  "usuario_id": "<ID_CUENTA_A>",
   "huella": "3c3b993c14562fa19aba63c6e11f1ab422c3c5081dfa15e1d76a5bba83072c57",
   "estado_http": 201,
   "respuesta": {

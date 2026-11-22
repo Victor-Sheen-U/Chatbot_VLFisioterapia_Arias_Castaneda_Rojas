@@ -1,43 +1,120 @@
 ======================================================================
-EVIDENCIA T12 — DOS CUENTAS INDEPENDIENTES Y RECHAZO 404 A RESERVA AJENA
-Fecha de ejecución: 2026-11-21T22:07:52.770999-05:00
-Cuenta A (Principal): usuario_id=7599925239 (propietaria de VF-3DFB92480C)
-Cuenta B (Secundaria): usuario_id=8888888802 (cuenta ajena)
+EVIDENCIA T12 — DOS CUENTAS REALES EN PARALELO Y BLOQUEO DE RESERVA AJENA (HTTP 404)
+Fecha de sesión en Telegram: 2026-11-22 (11:07 a 11:18 America/Bogota)
+Base de datos verificada: reservas.db (respaldada en reservas_pruebas_reales_2026-11-22.db)
+Cuentas participantes:
+  - Cuenta A (iPhone): usuario_id = <ID_CUENTA_A>
+  - Cuenta B (Android): usuario_id = <ID_CUENTA_B>
+  - ¿Ambos usuario_id en propietarios_telegram son reales y distintos?: True
+Capturas vinculadas:
+  - evidencias/T12_cuentaA_flujo.png
+  - evidencias/T12_cuentaB_acceso_ajeno.png
+  - evidencias/T12_cuentaB_crea.png
 ======================================================================
 
-1. Flujo en Cuenta A ('Hola me llamo Laura Gómez y quiero agendar traumatológica'):
-   Respuesta a Cuenta A: Para continuar necesito los siguientes datos: fecha, hora
-   Último plan en memoria de Cuenta A: {"plan": {"accion": "crear", "cliente": "Laura Gómez", "servicio": "traumatologica", "fecha": "", "hora": "", "codigo": "", "fisioterapeuta": ""}, "resultado": "Para continuar necesito los siguientes datos: fecha, hora"}
+1. Conversación simultánea a las 11:12 sin mezcla de contexto:
+   - Cuenta A (<ID_CUENTA_A>, 11:12): Agenda cita traumatológica para "Luis" el martes 2026-11-24 a las 16:00.
+     Solicitud confirmada: 0899aa48fa3947aa9f58c63293d0dff3 -> Crea código VF-84FAC21E56 (creada_en: 2026-11-22T11:12:43.299115-05:00).
+   - Cuenta B (<ID_CUENTA_B>, 11:12 AM): Consulta disponibilidad de "postural" para el 2026-11-25.
+     Respuesta de disponibilidad entregada a Cuenta B:
+     07:00, 07:30, 08:00, 08:30, 09:00, 09:30, 10:00, 10:30, 11:00, 11:30, 12:00, 12:30, 13:00, 13:30, 14:00, 14:30, 15:00, 15:30, 16:00, 16:30, 17:00, 17:30, 18:00
 
-2. Flujo independiente en Cuenta B ('Hola soy Andrés Pérez y quiero consultar disponibilidad de postural el 2026-11-25'):
-   Respuesta a Cuenta B:
-   Disponibilidad para postural el 2026-11-25:
-07:00, 07:30, 08:00, 08:30, 09:00, 09:30, 10:00, 10:30, 11:00, 11:30, 12:00, 12:30, 13:00, 13:30, 14:00, 14:30, 15:00, 15:30, 16:00, 16:30, 17:00, 17:30, 18:00
-   -> Se comprueba que los historiales y planes de Cuenta A y Cuenta B no se mezclan.
-
-3. Intento de Cuenta B (usuario_id=8888888802) de consultar la reserva de Cuenta A ('/reserva VF-3DFB92480C'):
-   Petición: GET http://127.0.0.1:8012/telegram/reservas/VF-3DFB92480C (X-Telegram-User: 8888888802)
-   Respuesta de FastAPI / Bot (HTTP 404): Reserva no disponible para este usuario
-
-4. Verificación en SQLite (propietarios_telegram y reservas sin alteración):
+2. Recibo de creación de VF-84FAC21E56 por Cuenta A (<ID_CUENTA_A>) en 'operaciones_telegram':
 {
-  "reserva": {
-    "codigo": "VF-3DFB92480C",
-    "cliente": "Valeria",
-    "servicio": "deportiva",
-    "fecha": "2026-11-25",
-    "hora": "11:00",
-    "duracion_minutos": 45,
-    "estado": "activa",
-    "fisioterapeuta": "valeria",
-    "fisioterapeuta_asignado": "valeria",
-    "telefono": null,
-    "motivo_consulta": null,
-    "precio_cop": 70000,
-    "creada_en": "2026-11-21T16:43:57.258072-05:00",
-    "cancelada_en": null,
-    "reprogramada_en": null,
-    "historial_reprogramaciones": "[]"
-  },
-  "propietario_id": 7599925239
+  "solicitud_id": "0899aa48fa3947aa9f58c63293d0dff3",
+  "usuario_id": "<ID_CUENTA_A>",
+  "huella": "78244034ff862c9893da65823ce9ab76802e99a9609e37eac2dfc2d1255c3ae9",
+  "estado_http": 201,
+  "respuesta": {
+    "ok": true,
+    "solicitud_id": "0899aa48fa3947aa9f58c63293d0dff3",
+    "accion": "crear",
+    "reserva": {
+      "codigo": "VF-84FAC21E56",
+      "cliente": "Luis",
+      "servicio": "traumatologica",
+      "fecha": "2026-11-24",
+      "hora": "16:00",
+      "duracion_minutos": 45,
+      "estado": "activa",
+      "fisioterapeuta": "mariana",
+      "fisioterapeuta_asignado": "mariana",
+      "telefono": null,
+      "motivo_consulta": null,
+      "precio_cop": 65000,
+      "creada_en": "2026-11-22T11:12:43.299115-05:00",
+      "cancelada_en": null,
+      "reprogramada_en": null,
+      "historial_reprogramaciones": []
+    },
+    "referencia": "6f98b90c1c7001cc49b940c42a72d70275d3628cca44d38018a12d40c79c9806"
+  }
+}
+
+3. Intento de acceso ajeno desde Cuenta B (<ID_CUENTA_B>) a las 11:13 AM:
+   - Comando enviado en Telegram por Cuenta B: /reserva VF-84FAC21E56
+   - Petición interna: GET /telegram/reservas/VF-84FAC21E56 (X-Telegram-User: <ID_CUENTA_B>)
+   - Vínculo en tabla 'propietarios_telegram' para VF-84FAC21E56:
+{
+  "codigo": "VF-84FAC21E56",
+  "usuario_id": "<ID_CUENTA_A>"
+}
+   - Resultado de AgendaTelegram.consultar_propia('VF-84FAC21E56', <ID_CUENTA_B>):
+     HTTP 404 (ReservaNoEncontrada): Reserva no disponible para este usuario
+
+4. Creación propia desde Cuenta B (<ID_CUENTA_B>) a las 11:18 AM (código VF-571AF9B513):
+   - Fila en tabla 'reservas' para VF-571AF9B513:
+{
+  "codigo": "VF-571AF9B513",
+  "cliente": "Andrés",
+  "servicio": "deportiva",
+  "fecha": "2026-11-25",
+  "hora": "11:00",
+  "duracion_minutos": 45,
+  "estado": "activa",
+  "fisioterapeuta": "valeria",
+  "fisioterapeuta_asignado": "valeria",
+  "telefono": null,
+  "motivo_consulta": null,
+  "precio_cop": 70000,
+  "creada_en": "2026-11-22T11:18:40.056262-05:00",
+  "cancelada_en": null,
+  "reprogramada_en": null,
+  "historial_reprogramaciones": "[]"
+}
+   - Vínculo en tabla 'propietarios_telegram' para VF-571AF9B513:
+{
+  "codigo": "VF-571AF9B513",
+  "usuario_id": "<ID_CUENTA_B>"
+}
+   - Recibo en tabla 'operaciones_telegram' (solicitud_id: 4727ae558d694a8aa98f2ea6213a1da7):
+{
+  "solicitud_id": "4727ae558d694a8aa98f2ea6213a1da7",
+  "usuario_id": "<ID_CUENTA_B>",
+  "huella": "02cb1a5acb866d8278b3ec6f7b991cd781af4bec9edc9181ca278420ae7be4fb",
+  "estado_http": 201,
+  "respuesta": {
+    "ok": true,
+    "solicitud_id": "4727ae558d694a8aa98f2ea6213a1da7",
+    "accion": "crear",
+    "reserva": {
+      "codigo": "VF-571AF9B513",
+      "cliente": "Andrés",
+      "servicio": "deportiva",
+      "fecha": "2026-11-25",
+      "hora": "11:00",
+      "duracion_minutos": 45,
+      "estado": "activa",
+      "fisioterapeuta": "valeria",
+      "fisioterapeuta_asignado": "valeria",
+      "telefono": null,
+      "motivo_consulta": null,
+      "precio_cop": 70000,
+      "creada_en": "2026-11-22T11:18:40.056262-05:00",
+      "cancelada_en": null,
+      "reprogramada_en": null,
+      "historial_reprogramaciones": []
+    },
+    "referencia": "13aae5e6f15c9f35c240870b5e946a608fb7a88107e30f5140481c21bf7c70c3"
+  }
 }

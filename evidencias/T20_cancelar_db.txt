@@ -1,52 +1,127 @@
 ======================================================================
-EVIDENCIA T20 — CANCELACIÓN LÓGICA DE RESERVA PROPIA Y LIBERACIÓN DE HORARIO
-Fecha de ejecución: 2026-11-21T22:07:55.228463-05:00
-Cuenta: Cuenta A (Principal) (usuario_id=7599925239) | Código: VF-3DFB92480C
+EVIDENCIA T20 — CANCELAR RESERVA PROPIA Y LIBERACIÓN DE HORARIO EN SQLITE
+Fecha de sesión en Telegram: 2026-11-22 (11:16 America/Bogota)
+Cuenta participante: Cuenta A (<ID_CUENTA_A>)
+Código de reserva cancelada: VF-84FAC21E56 (Paciente: Luis, traumatologica, mariana)
+Referencia de solicitud (solicitud_id): 2fd849fc255246009e6c233b4dea96cd
+Capturas vinculadas:
+  - evidencias/T20_cancelar_resumen.png
+  - evidencias/T20_cancelar_resultado.png
 ======================================================================
 
-1. ¿Horario 15:00 disponible para valeria el 2026-11-25 ANTES de cancelar?: False
-
-2. Resumen de propuesta CANCELAR presentado en Telegram:
-Propuesta de operación: CANCELAR
-• Paciente: Valeria
-• Tratamiento: deportiva
-• Fecha: 2026-11-25
-• Hora: 15:00
-• Código de cita: VF-3DFB92480C
-• Referencia de solicitud: b532bde7508242a5a2f581e864e632f6
-Revisa los datos y pulsa Confirmar para ejecutar en la agenda o Descartar para cancelarla.
-
-3. Recibo devuelto tras pulsar [Confirmar] (HTTP 200 OK):
-¡Operación CANCELAR registrada con éxito! 🎉
-• Código: VF-3DFB92480C
-• Paciente: Valeria
-• Tratamiento: deportiva
-• Fecha: 2026-11-25
-• Hora: 15:00
-• Estado: CANCELADA
-• Especialista: valeria
-• Tarifa: $70.000 COP
-• Referencia de operación: b532bde7508242a5a2f581e864e632f6
-• Consulta directa: /reserva VF-3DFB92480C
-
-4. ¿Horario 15:00 disponible para valeria el 2026-11-25 DESPUÉS de cancelar?: True
-
-5. Registro en SQLite (estado='cancelada', cancelada_en registrado, fila conservada para trazabilidad):
+1. Estado final de la fila VF-84FAC21E56 en la tabla 'reservas' (borrado lógico conservando historial):
 {
-  "codigo": "VF-3DFB92480C",
-  "cliente": "Valeria",
-  "servicio": "deportiva",
+  "codigo": "VF-84FAC21E56",
+  "cliente": "Luis",
+  "servicio": "traumatologica",
   "fecha": "2026-11-25",
   "hora": "15:00",
   "duracion_minutos": 45,
   "estado": "cancelada",
-  "fisioterapeuta": "valeria",
-  "fisioterapeuta_asignado": "valeria",
+  "fisioterapeuta": "mariana",
+  "fisioterapeuta_asignado": "mariana",
   "telefono": null,
   "motivo_consulta": null,
-  "precio_cop": 70000,
-  "creada_en": "2026-11-21T16:43:57.258072-05:00",
-  "cancelada_en": "2026-11-21T22:07:55.202622-05:00",
-  "reprogramada_en": "2026-11-21T22:07:54.438695-05:00",
-  "historial_reprogramaciones": "[{\"fecha_anterior\": \"2026-11-25\", \"hora_anterior\": \"11:00\", \"modificada_en\": \"2026-11-21T22:07:54.438695-05:00\"}]"
+  "precio_cop": 65000,
+  "creada_en": "2026-11-22T11:12:43.299115-05:00",
+  "cancelada_en": "2026-11-22T11:16:48.951784-05:00",
+  "reprogramada_en": "2026-11-22T11:16:07.273673-05:00",
+  "historial_reprogramaciones": "[{\"fecha_anterior\": \"2026-11-24\", \"hora_anterior\": \"16:00\", \"modificada_en\": \"2026-11-22T11:16:07.273673-05:00\"}]"
 }
+
+2. Recibo de la operación CANCELAR persistido en 'operaciones_telegram' a las 11:16:48 (HTTP 200):
+{
+  "solicitud_id": "2fd849fc255246009e6c233b4dea96cd",
+  "usuario_id": "<ID_CUENTA_A>",
+  "huella": "72826191a2bd11f8ae76c0e20350c04da9525bd00e20013b9afea7682d206245",
+  "estado_http": 200,
+  "respuesta": {
+    "ok": true,
+    "solicitud_id": "2fd849fc255246009e6c233b4dea96cd",
+    "accion": "cancelar",
+    "reserva": {
+      "codigo": "VF-84FAC21E56",
+      "cliente": "Luis",
+      "servicio": "traumatologica",
+      "fecha": "2026-11-25",
+      "hora": "15:00",
+      "duracion_minutos": 45,
+      "estado": "cancelada",
+      "fisioterapeuta": "mariana",
+      "fisioterapeuta_asignado": "mariana",
+      "telefono": null,
+      "motivo_consulta": null,
+      "precio_cop": 65000,
+      "creada_en": "2026-11-22T11:12:43.299115-05:00",
+      "cancelada_en": "2026-11-22T11:16:48.951784-05:00",
+      "reprogramada_en": "2026-11-22T11:16:07.273673-05:00",
+      "historial_reprogramaciones": [
+        {
+          "fecha_anterior": "2026-11-24",
+          "hora_anterior": "16:00",
+          "modificada_en": "2026-11-22T11:16:07.273673-05:00"
+        }
+      ]
+    },
+    "referencia": "0b4d58d3a0ae3730c3838839ff3483f363d1a1e5fa0cedcb16a1a57fb3cc4de7"
+  }
+}
+
+3. Verificación de liberación inmediata del bloque 15:00 del 2026-11-25 con 'mariana' (/telegram/disponibilidad):
+{
+  "fecha": "2026-11-25",
+  "servicio": "traumatologica",
+  "fisioterapeuta": "mariana",
+  "duracion_minutos": 45,
+  "horarios_disponibles": [
+    "07:00",
+    "07:30",
+    "08:00",
+    "08:30",
+    "09:00",
+    "09:30",
+    "10:00",
+    "10:30",
+    "11:00",
+    "11:30",
+    "12:00",
+    "12:30",
+    "13:00",
+    "13:30",
+    "14:00",
+    "14:30",
+    "15:00",
+    "15:30",
+    "16:00",
+    "16:30",
+    "17:00",
+    "17:30",
+    "18:00"
+  ],
+  "horas": [
+    "07:00",
+    "07:30",
+    "08:00",
+    "08:30",
+    "09:00",
+    "09:30",
+    "10:00",
+    "10:30",
+    "11:00",
+    "11:30",
+    "12:00",
+    "12:30",
+    "13:00",
+    "13:30",
+    "14:00",
+    "14:30",
+    "15:00",
+    "15:30",
+    "16:00",
+    "16:30",
+    "17:00",
+    "17:30",
+    "18:00"
+  ]
+}
+   - ¿El bloque '15:00' del 2026-11-25 con mariana está nuevamente libre?: True

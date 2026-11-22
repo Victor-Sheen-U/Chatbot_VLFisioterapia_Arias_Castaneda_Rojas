@@ -1,32 +1,32 @@
 ======================================================================
-EVIDENCIA T23 — RECHAZO DE BOTÓN ANTIGUO, PROPUESTA DESCARTADA Y VENCIMIENTO TTL
-Fecha de ejecución: 2026-11-21T22:12:23.692189-05:00
-Cuenta: Cuenta A (Principal) (usuario_id=7599925239)
+EVIDENCIA T23 — REEMPLAZO DE PROPUESTA, RECHAZO DE BOTÓN ANTIGUO Y DESCARTE SIN ESCRITURA
+Fecha de sesión en Telegram: 2026-11-22 (11:22 a 11:24 America/Bogota)
+Cuenta participante: Cuenta A (<ID_CUENTA_A>)
+Referencias de solicitud en Telegram:
+  - Resumen 1 (09:00, obsoleto): 88a78e03998e40e98697a29a7f868a77
+  - Resumen 2 (11:00, vigente y luego descartado): fc39c8a50c5143468d29fe096cc57773
+Capturas vinculadas:
+  - evidencias/T23_reemplazo_y_boton_antiguo_1.png
+  - evidencias/T23_boton_antiguo_2.png
+  - evidencias/T23_descartar_3.png
 ======================================================================
 
-1. Propuesta 1 generada (09:00, solicitud_id=9c24658aa6554d8ca7a62bf9e80ae6b8):
-Propuesta de operación: CREAR
-• Paciente: Laura Gómez
-• Tratamiento: puncion_seca
-• Fecha: 2026-11-26
-• Hora: 09:00
-• Referencia de solicitud: 9c24658aa6554d8ca7a62bf9e80ae6b8
-Revisa los datos y pulsa Confirmar para ejecutar en la agenda o Descartar para cancelarla.
+1. Secuencia ejecutada en Telegram real:
+   - 11:22 -> /reset -> "Conversación reiniciada. Tus citas guardadas se conservan. ¿En qué te puedo colaborar?"
+   - 11:22 -> "Quiero agendar una punción seca para luna el jueves 26 a las 9 de la mañana"
+   - 11:23 -> Bot presenta Resumen 1 (CREAR, Paciente: luna, puncion_seca, 2026-11-26, 09:00, solicitud_id: 88a78e03998e40e98697a29a7f868a77).
+   - 11:23 -> Sin confirmar, el usuario escribe: "Mejor a las 11 am".
+   - 11:23 -> Bot actualiza la propuesta en curso y presenta Resumen 2 (CREAR, Paciente: luna, puncion_seca, 2026-11-26, 11:00, solicitud_id: fc39c8a50c5143468d29fe096cc57773).
+   - 11:23 y 11:24 -> El usuario pulsa dos veces el botón [Confirmar] del Resumen 1 antiguo (88a78e03998e40e98697a29a7f868a77).
+     motivo_rechazo() detecta pendiente["solicitud_id"] != solicitud_id y responde en ambos clics:
+     "Ese resumen ya no es el vigente."
+   - 11:24 -> El usuario pulsa [Descartar] en el Resumen 2 vigente (fc39c8a50c5143468d29fe096cc57773).
+     El bot retira los botones inline del Resumen 2, limpia context.chat_data["pendiente"] y responde:
+     "Propuesta descartada. No se modificó tu agenda."
 
-2. Propuesta 2 que reemplaza a la anterior ('Mejor a las 11:00', solicitud_id=68e5682a80514676a934dfc18570ddf3):
-Propuesta de operación: CREAR
-• Paciente: Laura Gómez
-• Tratamiento: puncion_seca
-• Fecha: 2026-11-26
-• Hora: 11:00
-• Referencia de solicitud: 68e5682a80514676a934dfc18570ddf3
-Revisa los datos y pulsa Confirmar para ejecutar en la agenda o Descartar para cancelarla.
-
-3. Clic en el botón [Confirmar] antiguo de la Propuesta 1 (callback_data='confirmar:9c24658aa6554d8ca7a62bf9e80ae6b8'):
-   Respuesta del bot: 'Ese resumen ya no es el vigente.'
-   Efecto: La Propuesta 1 es rechazada y la Propuesta 2 no se ejecuta.
-
-4. Tras ejecutar '/descartar', nuevo clic sobre 'confirmar:68e5682a80514676a934dfc18570ddf3':
-   Respuesta del bot: 'No hay una solicitud pendiente en esta conversación.'
-
-5. Verificación en SQLite: Filas antes=6, Filas después=6 (0 duplicados ni inserciones).
+2. Comprobación en SQLite (reservas.db) de que NO se insertó ninguna fila para 'luna':
+   - Consulta en tabla 'reservas': SELECT * FROM reservas WHERE LOWER(cliente) LIKE '%luna%'
+   - Resultado: [] (0 filas insertadas)
+   - Consulta en tabla 'operaciones_telegram' para 88a78e03998e40e98697a29a7f868a77 y fc39c8a50c5143468d29fe096cc57773:
+   - Resultado: [] (0 peticiones de escritura enviadas a FastAPI)
+   - Conteo total de filas en 'reservas': 8 (sin cambios)

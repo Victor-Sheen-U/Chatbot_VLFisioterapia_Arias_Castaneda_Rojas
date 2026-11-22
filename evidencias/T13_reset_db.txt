@@ -1,39 +1,91 @@
 ======================================================================
-EVIDENCIA T13 — COMANDO /reset LIMPIA HISTORIAL PERO CONSERVA RESERVAS EN SQLITE
-Fecha de ejecución: 2026-11-21T22:07:46.851187-05:00
-Cuenta: Cuenta A (Principal) (usuario_id=7599925239) | Código propio: VF-3DFB92480C
+EVIDENCIA T13 — COMANDO /reset LIMPIA MEMORIA VOLÁTIL Y CONSERVA RESERVAS EN SQLITE
+Fecha de sesión en Telegram: 2026-11-22 (11:02 a 11:03 America/Bogota)
+Cuenta participante: Cuenta A (<ID_CUENTA_A>)
+Código consultado tras /reset: VF-F3D3183CA4
+Captura vinculada: evidencias/T13_reset.png
 ======================================================================
 
-1. Estado del historial en memoria antes de /reset: 3 mensajes ([system, user, assistant]).
-2. Respuesta del bot al comando /reset:
-   Conversación reiniciada. Tus citas guardadas se conservan. ¿En qué te puedo colaborar?
-3. Estado del historial en memoria después de /reset: 1 mensaje (solo role='system').
-4. Respuesta del bot al comando '/reserva VF-3DFB92480C' inmediatamente después de /reset:
-• Código: VF-3DFB92480C
-• Paciente: Valeria
-• Tratamiento: deportiva
-• Fecha: 2026-11-25
-• Hora: 11:00
-• Estado: ACTIVA
-• Especialista: valeria
-• Tarifa: $70.000 COP
-
-5. Registro verificado en SQLite (reservas.db):
+1. Reserva activa VF-F3D3183CA4 registrada en 'reservas' antes del /reset (creada a las 11:02:49):
 {
-  "codigo": "VF-3DFB92480C",
-  "cliente": "Valeria",
+  "codigo": "VF-F3D3183CA4",
+  "cliente": "Juan",
   "servicio": "deportiva",
-  "fecha": "2026-11-25",
-  "hora": "11:00",
+  "fecha": "2026-11-23",
+  "hora": "15:00",
   "duracion_minutos": 45,
   "estado": "activa",
-  "fisioterapeuta": "valeria",
-  "fisioterapeuta_asignado": "valeria",
+  "fisioterapeuta": "mariana",
+  "fisioterapeuta_asignado": "mariana",
   "telefono": null,
   "motivo_consulta": null,
   "precio_cop": 70000,
-  "creada_en": "2026-11-21T16:43:57.258072-05:00",
+  "creada_en": "2026-11-22T11:02:49.787949-05:00",
   "cancelada_en": null,
   "reprogramada_en": null,
   "historial_reprogramaciones": "[]"
+}
+
+2. Propiedad en 'propietarios_telegram' y recibo de creación en 'operaciones_telegram' (2d2d164c7f78439a8e0a5666abd84625):
+Propietario:
+{
+  "codigo": "VF-F3D3183CA4",
+  "usuario_id": "<ID_CUENTA_A>"
+}
+Recibo:
+{
+  "solicitud_id": "2d2d164c7f78439a8e0a5666abd84625",
+  "usuario_id": "<ID_CUENTA_A>",
+  "huella": "a6b0384a083f7001a7bc0acecbaad601e4edeafad44a42b24b949e4ceb94326a",
+  "estado_http": 201,
+  "respuesta": {
+    "ok": true,
+    "solicitud_id": "2d2d164c7f78439a8e0a5666abd84625",
+    "accion": "crear",
+    "reserva": {
+      "codigo": "VF-F3D3183CA4",
+      "cliente": "Juan",
+      "servicio": "deportiva",
+      "fecha": "2026-11-23",
+      "hora": "15:00",
+      "duracion_minutos": 45,
+      "estado": "activa",
+      "fisioterapeuta": "mariana",
+      "fisioterapeuta_asignado": "mariana",
+      "telefono": null,
+      "motivo_consulta": null,
+      "precio_cop": 70000,
+      "creada_en": "2026-11-22T11:02:49.787949-05:00",
+      "cancelada_en": null,
+      "reprogramada_en": null,
+      "historial_reprogramaciones": []
+    },
+    "referencia": "4d9a750eaa17aedf914bd40bb3f17139659a9129ba9b6eede73108b42db12aac"
+  }
+}
+
+3. Ejecución de /reset y consulta inmediata /reserva VF-F3D3183CA4 a las 11:03 (T13_reset.png):
+   - Respuesta de /reset (11:03): "Conversación reiniciada. Tus citas guardadas se conservan. ¿En qué te puedo colaborar?"
+   - Efecto en memoria del bot: context.chat_data.clear() reinicia el historial conversacional del chat.
+   - Respuesta de GET /telegram/reservas/VF-F3D3183CA4 para <ID_CUENTA_A> (HTTP 200):
+{
+  "reserva": {
+    "codigo": "VF-F3D3183CA4",
+    "cliente": "Juan",
+    "servicio": "deportiva",
+    "fecha": "2026-11-23",
+    "hora": "15:00",
+    "duracion_minutos": 45,
+    "estado": "activa",
+    "fisioterapeuta": "mariana",
+    "fisioterapeuta_asignado": "mariana",
+    "telefono": null,
+    "motivo_consulta": null,
+    "precio_cop": 70000,
+    "creada_en": "2026-11-22T11:02:49.787949-05:00",
+    "cancelada_en": null,
+    "reprogramada_en": null,
+    "historial_reprogramaciones": []
+  },
+  "referencia": "4d9a750eaa17aedf914bd40bb3f17139659a9129ba9b6eede73108b42db12aac"
 }

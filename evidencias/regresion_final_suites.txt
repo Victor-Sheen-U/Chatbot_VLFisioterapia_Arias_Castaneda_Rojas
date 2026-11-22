@@ -1,0 +1,44 @@
+======================================================================
+REGISTRO DE REGRESIÓN FINAL — SUITES AUTOMATIZADAS (VLFisioterapia)
+Fecha de ejecución: 2026-11-22T12:53:46.285373-05:00
+Intérprete: Python 3.13.9 (.venv)
+Suites ejecutadas tras aplicar todas las correcciones (Fichas 1 a 8):
+  1) python probar_fisioterapia.py -> 100% OK
+  2) python test_telegram.py       -> 100% OK
+======================================================================
+
+----------------------------------------------------------------------
+[SUITE 1/2] $ python probar_fisioterapia.py
+----------------------------------------------------------------------
+Iniciando pruebas de VLFisioterapia...
+Todas las pruebas pasaron satisfactoriamente (100% OK).
+
+----------------------------------------------------------------------
+[SUITE 2/2] $ python test_telegram.py
+----------------------------------------------------------------------
+======================================================================
+INICIANDO SUITE DE PRUEBAS DE TELEGRAM (CLASE 13) — VLFisioterapia
+======================================================================
+
+[1/5] Probando autenticación (X-API-Key), claves y autorización de usuario...
+  ✓ Autenticación (401), desactivación segura (503) e identidad (422) verificadas!
+
+[2/5] Probando catálogo (/telegram/servicios) y disponibilidad real...
+  ✓ Catálogo VLFisioterapia (precios COP) y disponibilidad horaria verificados!
+
+[3/5] Probando ciclo completo: crear, propiedad, bloqueo ajeno, modificar, cancelar...
+  ✓ Creación, asociación de propiedad, aislamiento de cuenta, resumen obsoleto (409) y cancelación OK!
+
+[4/5] Probando idempotencia, recibos persistentes y protección contra reintentos...
+  ✓ Idempotencia estricta, detección de datos alterados (409) y recuperación de recibos OK!
+
+[5/5] Probando concurrencia multihilo (T22) y lógica de bot / T24 respuesta perdida...
+  ✓ Concurrencia real (201 vs 409), rechazo de botones vencidos/antiguos y simulación T24 OK!
+
+======================================================================
+¡TODAS LAS PRUEBAS DEL CANAL TELEGRAM PASARON EXITOSAMENTE (100% OK)!
+======================================================================
+
+======================================================================
+RESULTADO GLOBAL DE REGRESIÓN: 2 / 2 SUITES AL 100% OK (0 FALLOS)
+======================================================================

@@ -1,16 +1,47 @@
 ======================================================================
-EVIDENCIA T25 — ENTRADAS INVÁLIDAS (FECHA PASADA, DOMINGO/FUERA DE HORARIO) Y API APAGADA
-Fecha de ejecución: 2026-11-21T22:12:27.291278-05:00
-Cuenta: Cuenta A (Principal) (usuario_id=7599925239)
+EVIDENCIA T25 — ENTRADAS INVÁLIDAS Y SITUACIONES LÍMITE (FECHA PASADA, DOMINGO CERRADO Y API APAGADA)
+Fecha de sesión en Telegram: 2026-11-22 (11:25 a 11:26 America/Bogota)
+Cuenta participante: Cuenta A (<ID_CUENTA_A>)
+Capturas vinculadas:
+  - Sub-caso T25a(1) (fecha pasada):    evidencias/T25_fecha_pasada.png
+  - Sub-caso T25a(2) (domingo cerrado): evidencias/T25_domingo_cerrado.png
+  - Sub-caso T25b    (FastAPI apagada): evidencias/T25_api_apagada.png
 ======================================================================
 
-1. Sub-caso 25a (1) — Consulta en fecha pasada ('¿Hay disponibilidad de valoración el 2025-05-10?'):
-   Respuesta controlada (HTTP 422): 'La fecha seleccionada ya pasó. Seleccione una fecha futura.'
+1. Sub-caso T25a(1) — Consulta de disponibilidad en fecha pasada (11:25):
+   - Mensaje enviado: "Hay disponible una valoración para el 3 de enero del año 2025?"
+   - Petición a FastAPI: GET /telegram/disponibilidad?fecha=2025-01-03&servicio=evaluacion
+   - Respuesta de FastAPI (HTTP 422) mostrada por el bot:
+     "La fecha seleccionada ya pasó. Seleccione una fecha futura."
 
-2. Sub-caso 25a (2) — Confirmación de cita en domingo y fuera de horario ('2026-11-22 a las 20:00'):
-   Respuesta controlada (HTTP 422): 'La API de VLFisioterapia rechazó la operación: El negocio está cerrado ese día'
+2. Sub-caso T25a(2) — Intento de agendar en domingo cerrado (hoy = domingo 2026-11-22, 11:26):
+   - Mensaje enviado: "Quiero agendar una valoración para Laura hoy a las 3 pm"
+   - Propuesta generada: CREAR · Paciente: Laura · Tratamiento: evaluacion · Fecha: 2026-11-22 (domingo) · Hora: 15:00
+     Referencia de solicitud (solicitud_id): 4faf80cc14994ef48fc4b890121f45fa
+   - Nota: Las 15:00 está dentro del rango de lunes a viernes (07:00–19:00), pero el 2026-11-22 es domingo y la clínica está cerrada todo el día.
+   - Al pulsar [Confirmar], AgendaTelegram.operar() ejecuta ROLLBACK TO cambio_reserva y registra el recibo HTTP 422 en 'operaciones_telegram':
+{
+  "solicitud_id": "4faf80cc14994ef48fc4b890121f45fa",
+  "usuario_id": "<ID_CUENTA_A>",
+  "huella": "97d20c8a535cbfcd35962ddca2b826a434d7a8c0b9792774f750684387c18454",
+  "estado_http": 422,
+  "respuesta": {
+    "ok": false,
+    "solicitud_id": "4faf80cc14994ef48fc4b890121f45fa",
+    "accion": "crear",
+    "detalle": "El negocio está cerrado ese día"
+  }
+}
+   - Respuesta mostrada por el bot en Telegram (11:26):
+     "La API de VLFisioterapia rechazó la operación: El negocio está cerrado ese día"
 
-3. Sub-caso 25b — Servidor FastAPI detenido (puerto 8012 apagado) y consulta '¿Qué servicios ofrecen?':
-   Respuesta controlada del bot (captura URLError sin caerse ni inventar datos): 'No pude conectar con el servicio. Todavía no se envió ninguna escritura.'
+3. Sub-caso T25b — Petición con FastAPI apagada (11:26):
+   - Acción: Se detiene el servidor Uvicorn (puerto 8012 apagado) manteniendo bot_telegram.py activo.
+   - Mensaje enviado: "Qué servicios ofrecen"
+   - Respuesta controlada del bot al capturar URLError (11:26):
+     "No pude conectar con el servicio. Todavía no se envió ninguna escritura."
 
-4. Verificación en SQLite: Filas antes=6, Filas después=6 (base de datos intacta).
+4. Comprobación de integridad en SQLite (reservas.db):
+   - Consulta: SELECT * FROM reservas WHERE LOWER(cliente) LIKE '%laura%' OR fecha IN ('2025-01-03', '2026-11-22')
+   - Resultado: [] (0 filas insertadas)
+   - Conteo total de filas en 'reservas': 8 (intacto en 8 filas: 5 semilla + 3 de la sesión previa)

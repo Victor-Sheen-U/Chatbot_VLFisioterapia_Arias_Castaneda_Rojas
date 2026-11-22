@@ -1,30 +1,19 @@
 ======================================================================
-EVIDENCIA T21 — RECHAZO DE CRUCE DE HORARIO POR FISIOTERAPEUTA (HTTP 409)
-Fecha de ejecución: 2026-11-21T22:07:53.541953-05:00
-Reserva activa previa de Cuenta A: VF-3DFB92480C (deportiva, 45 min, 2026-11-25 11:00–11:45, fisio=valeria)
-Solicitud en conflicto de Cuenta B (usuario_id=8888888802): deportiva con valeria el 2026-11-25 a las 11:00
+EVIDENCIA T21 — RECHAZO DE CRUCE DE HORARIO CON EL MISMO FISIOTERAPEUTA ENTRE DOS CUENTAS (HTTP 409)
+Fecha de sesión en Telegram: 2026-11-22 (11:18 a 11:20 America/Bogota)
+Cuentas participantes:
+  - Cuenta B (<ID_CUENTA_B>): Tiene activa la reserva VF-571AF9B513 (Andrés, deportiva, 2026-11-25 11:00, valeria, 45 min).
+  - Cuenta A (<ID_CUENTA_A>): Intenta agendar deportiva para "Juanita" el 2026-11-25 a las 11:00 con "valeria".
+Referencia de solicitud rechazada (solicitud_id): 8a842efb210f4de19b82c65acf340eae
+Capturas vinculadas:
+  - evidencias/T12_cuentaB_crea.png (reserva previa de Cuenta B a las 11:18 AM)
+  - evidencias/T21_cruce_rechazado.png (intento y rechazo 409 en Cuenta A a las 11:20)
 ======================================================================
 
-1. Resumen presentado a Cuenta B antes de confirmar:
-Propuesta de operación: CREAR
-• Paciente: Andrés Pérez
-• Tratamiento: deportiva
-• Fecha: 2026-11-25
-• Hora: 11:00
-• Especialista solicitado: valeria
-• Referencia de solicitud: bc65cd684b904e9f904b1ab77b96f923
-Revisa los datos y pulsa Confirmar para ejecutar en la agenda o Descartar para cancelarla.
-
-2. Respuesta tras pulsar botón [Confirmar] (POST /telegram/operaciones -> HTTP 409 Conflict):
-   La API de VLFisioterapia rechazó la operación: El horario o profesional seleccionado no está disponible en esa fecha y hora.
-
-3. Conteo de filas en tabla 'reservas' ANTES del intento: 6
-   Conteo de filas en tabla 'reservas' DESPUÉS del rechazo 409: 6 (datos previos intactos)
-
-4. Estado intacto de la reserva previa de Cuenta A en SQLite:
+1. Reserva activa previa en el bloque 2026-11-25 11:00–11:45 con 'valeria' (creada por Cuenta B a las 11:18:40 con solicitud_id: 4727ae558d694a8aa98f2ea6213a1da7):
 {
-  "codigo": "VF-3DFB92480C",
-  "cliente": "Valeria",
+  "codigo": "VF-571AF9B513",
+  "cliente": "Andrés",
   "servicio": "deportiva",
   "fecha": "2026-11-25",
   "hora": "11:00",
@@ -35,8 +24,111 @@ Revisa los datos y pulsa Confirmar para ejecutar en la agenda o Descartar para c
   "telefono": null,
   "motivo_consulta": null,
   "precio_cop": 70000,
-  "creada_en": "2026-11-21T16:43:57.258072-05:00",
+  "creada_en": "2026-11-22T11:18:40.056262-05:00",
   "cancelada_en": null,
   "reprogramada_en": null,
   "historial_reprogramaciones": "[]"
 }
+
+2. Recibo del rechazo HTTP 409 registrado en 'operaciones_telegram' tras ROLLBACK TO cambio_reserva (11:20):
+{
+  "solicitud_id": "8a842efb210f4de19b82c65acf340eae",
+  "usuario_id": "<ID_CUENTA_A>",
+  "huella": "ee75c05e8eba5fb1fb72ebda2755cb524d6be171d25f48a51daae6637b6e3385",
+  "estado_http": 409,
+  "respuesta": {
+    "ok": false,
+    "solicitud_id": "8a842efb210f4de19b82c65acf340eae",
+    "accion": "crear",
+    "detalle": "El horario o profesional seleccionado no está disponible en esa fecha y hora."
+  }
+}
+
+3. Comprobación en la tabla 'reservas' de que NO se insertó ninguna fila para 'Juanita':
+   - Consulta: SELECT * FROM reservas WHERE LOWER(cliente) LIKE '%juanita%'
+   - Resultado: [] (0 filas insertadas)
+   - ¿La reserva VF-571AF9B513 de Cuenta B permanece ACTIVA e intacta?: True
+
+4. Conteo y listado completo de la tabla 'reservas' (8 filas totales antes y después del intento T21: 5 semilla + 3 de la sesión):
+[
+  {
+    "codigo": "VF-BBD3FF0D07",
+    "cliente": "Paciente Demo 1",
+    "servicio": "evaluacion",
+    "fecha": "2026-11-23",
+    "hora": "09:00",
+    "duracion_minutos": 60,
+    "estado": "activa",
+    "fisioterapeuta_asignado": "mariana"
+  },
+  {
+    "codigo": "VF-19BE4C5B11",
+    "cliente": "Paciente Demo 2",
+    "servicio": "postural",
+    "fecha": "2026-11-23",
+    "hora": "09:00",
+    "duracion_minutos": 45,
+    "estado": "activa",
+    "fisioterapeuta_asignado": "valeria"
+  },
+  {
+    "codigo": "VF-54F07508E1",
+    "cliente": "Paciente Demo 3",
+    "servicio": "puncion_seca",
+    "fecha": "2026-11-23",
+    "hora": "11:00",
+    "duracion_minutos": 45,
+    "estado": "cancelada",
+    "fisioterapeuta_asignado": "carlos"
+  },
+  {
+    "codigo": "VF-5CAFE1E9EF",
+    "cliente": "Paciente Demo 4",
+    "servicio": "deportiva",
+    "fecha": "2026-11-24",
+    "hora": "10:00",
+    "duracion_minutos": 45,
+    "estado": "activa",
+    "fisioterapeuta_asignado": "mariana"
+  },
+  {
+    "codigo": "VF-07A30DF37E",
+    "cliente": "Paciente Demo 5",
+    "servicio": "neurologica",
+    "fecha": "2026-11-25",
+    "hora": "14:00",
+    "duracion_minutos": 60,
+    "estado": "activa",
+    "fisioterapeuta_asignado": "carlos"
+  },
+  {
+    "codigo": "VF-F3D3183CA4",
+    "cliente": "Juan",
+    "servicio": "deportiva",
+    "fecha": "2026-11-23",
+    "hora": "15:00",
+    "duracion_minutos": 45,
+    "estado": "activa",
+    "fisioterapeuta_asignado": "mariana"
+  },
+  {
+    "codigo": "VF-84FAC21E56",
+    "cliente": "Luis",
+    "servicio": "traumatologica",
+    "fecha": "2026-11-25",
+    "hora": "15:00",
+    "duracion_minutos": 45,
+    "estado": "cancelada",
+    "fisioterapeuta_asignado": "mariana"
+  },
+  {
+    "codigo": "VF-571AF9B513",
+    "cliente": "Andrés",
+    "servicio": "deportiva",
+    "fecha": "2026-11-25",
+    "hora": "11:00",
+    "duracion_minutos": 45,
+    "estado": "activa",
+    "fisioterapeuta_asignado": "valeria"
+  }
+]
