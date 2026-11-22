@@ -175,7 +175,7 @@ El proyecto lee las variables de entorno desde el sistema o desde un archivo `.e
    Copy-Item .env.example .env
    ```
 
-2. Genera una clave privada de al menos 16 caracteres ASCII para `CHATBOT_API_KEY` (por ejemplo con `python -c "import secrets; print(secrets.token_urlsafe(32))"`) y edita `.env` completando `TELEGRAM_BOT_TOKEN`, `CHATBOT_API_KEY` y `GROQ_API_KEY` con el mismo valor de `CHATBOT_API_KEY` para ambos procesos.
+2. Genera una clave privada de al menos 16 caracteres ASCII para `CHATBOT_API_KEY` (por ejemplo con `python -c "import secrets; print(secrets.token_urlsafe(32))"`) y edita `.env` completando `TELEGRAM_BOT_TOKEN`, `CHATBOT_API_KEY` y `GROQ_API_KEY` (usa el mismo valor de `CHATBOT_API_KEY` en el `.env` que leen FastAPI y el bot).
 
 ---
 
@@ -296,7 +296,7 @@ python test_telegram.py
 - **Base de datos SQLite ([`reservas.db`](reservas.db)):**
   - **Ubicación y creación:** se ubica en la raíz (`./reservas.db`). Si el archivo no existe al iniciar `main.py` o `preparar_datos_prueba.py`, `AgendaTelegram` (`api_telegram.py`) y `AgendaSQLite` (`almacen_sqlite.py`) la crean automáticamente junto con las tres tablas: `reservas` (16 columnas), `propietarios_telegram` y `operaciones_telegram`.
   - **Datos de práctica incluidos:** el repositorio incluye `reservas.db` pre-cargada con **5 reservas de práctica** (`Paciente Demo 1` a `Paciente Demo 5`) en días hábiles futuros (4 activas y 1 cancelada, incluyendo citas simultáneas con distintas fisioterapeutas a las `09:00`) y con las tablas `propietarios_telegram` y `operaciones_telegram` limpias.
-  - **Cómo restaurar los datos de práctica iniciales en cualquier momento:**
+  - **Nota sobre fechas de práctica y restauración:** la base de práctica usa fechas relativas al día de ejecución; ejecuta `python preparar_datos_prueba.py --reiniciar` antes de la demo para regenerar las 5 citas con días hábiles futuros respecto a la fecha actual y vaciar las tablas de operaciones previas:
     ```bash
     python preparar_datos_prueba.py --reiniciar
     ```
@@ -304,8 +304,9 @@ python test_telegram.py
 ### Navegación a los documentos y entregables
 
 - **Documentación principal (Bitácora Consolidada):** [`documentacion/Bitacora_Consolidada.md`](documentacion/Bitacora_Consolidada.md)
-- **Matriz de 25 pruebas y resultados:** [`documentacion/Matriz_25_Pruebas.md`](documentacion/Matriz_25_Pruebas.md)
-- **Evidencias de pruebas (T01–T25):** [`evidencias/`](evidencias/)
+- **Matriz de 25 pruebas y resultados (`T01–T25`):** [`documentacion/Matriz_25_Pruebas.md`](documentacion/Matriz_25_Pruebas.md)
+- **Evidencias de pruebas (`T01–T25`, capturas reales de Telegram con dos cuentas y registros SQLite):** [`evidencias/`](evidencias/)
+- **Registro de regresión final de las suites automatizadas (`probar_fisioterapia.py` y `test_telegram.py`):** [`evidencias/regresion_final_suites.txt`](evidencias/regresion_final_suites.txt)
 - **Presentación final del proyecto (PDF):** [`presentacion/Presentacion_Final.pdf`](presentacion/Presentacion_Final.pdf)
 - **Histórico de cortes anteriores:**
   - Bitácora del Segundo Corte: [`documentacion/historico/Bitacora_Segundo_Corte.md`](documentacion/historico/Bitacora_Segundo_Corte.md)
